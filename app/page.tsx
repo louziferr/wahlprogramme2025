@@ -209,13 +209,23 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-2/3 h-[3px] border-b-2 border-dotted border-gray-500"></div>
+          <div className="mt-8 w-full lg:w-2/3 h-[3px] border-b-2 border-dotted border-gray-500"></div>
           <p className="pt-8 font-dmSerif text-lg text-center">
             Umgesetzt von: Luzie Ahrens
           </p>
           <p className="font-dmSerif text-center text-blue-500 pb-8">
             <a href="https://www.luzie-ahrens.de">www.luzie-ahrens.de</a>
           </p>
+          <p className="pt-4 font-dmSerif text-center text-black pb-8">
+            Programmcode einsehbar auf:{" "}
+            <a
+              href="https://github.com/louziferr/wahlprogramme2025"
+              className="text-blue-500"
+            >
+              Github
+            </a>
+          </p>
+          <div className="w-full lg:w-2/3 mb-8 h-[3px] border-b-2 border-dotted border-gray-500"></div>
         </div>
       </div>
     </>
