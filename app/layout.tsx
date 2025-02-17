@@ -4,7 +4,7 @@ import "@fontsource/luckiest-guy";
 import "@fontsource/dm-serif-text";
 
 export const metadata: Metadata = {
-  title: "Wahlprogramm Analyse",
+  title: "Wahlprogramm Wortanalyse",
   description:
     "Linguistische Analyse der Wahlprogramme der Parteien zur Bundestagswahl 2025",
 };
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className="bg-black">{children}</body>
+      <body className="bg-white">{children}</body>
     </html>
   );
 }
