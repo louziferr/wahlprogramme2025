@@ -1,101 +1,108 @@
-import Image from "next/image";
+"use client";
+
+import { BarChart } from "@mui/x-charts";
+import { useEffect, useState } from "react";
+
+interface Woerter {
+  [key: string]: { [word: string]: number };
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [afd, setAfd] = useState(50);
+  const [linke, setLinke] = useState(50);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const data = [
+    { party: "AFD", count: afd },
+    { party: "Linke", count: linke },
+  ];
+
+  const [word, setWord] = useState("");
+  const [woerter, setWoerter] = useState<Woerter | null>(null);
+
+  useEffect(() => {
+    fetch("/woerter_klein.json") // Pfad zur JSON-Datei im `public`-Ordner
+      .then((response) => response.json())
+      .then((jsonData) => {
+        setWoerter(jsonData);
+      })
+      .catch((error) => console.error("Fehler beim Laden der JSON:", error));
+  }, []);
+
+  async function getWordCount() {
+    if (!word) return;
+    if (!woerter) return;
+    if (woerter["afd"].hasOwnProperty(word)) {
+      setAfd(woerter["afd"][word]);
+    } else {
+      setAfd(0);
+    }
+    if (woerter["linke"].hasOwnProperty(word)) {
+      setLinke(woerter["linke"][word]);
+    } else {
+      setLinke(0);
+    }
+    console.log(data);
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-center flex-wrap">
+        <div className="bg-white md:p-4 md:w-2/3 md:m-8 shadow-md shadow-black rounded flex-wrap flex flex-col items-center justify-center">
+          <h1 className="font-dmSerif pb-4">Wahlprogramme</h1>
+          <h1 className="font-dmSerif pb-4">Bundestagswahl 2025</h1>
+          <div className="p-2">
+            <p className="font-dmSerif text-lg">
+              Finde heraus, welche Parteien über deine Themen sprechen!
+            </p>
+            <p className="max-w-[500px] p-2 pb-8">
+              Auf dieser Website kannst du die Wahlprogramme aller großen
+              Parteien zur kommenden Bundestagswahl nach bestimmten Begriffen
+              durchsuchen. Einfach ein Schlagwort eingeben - zum Beispiel
+              Klimaschutz, Steuern oder Bildung - und sehen, welche Partei es
+              wie oft in ihrem Programm erwähnt. Die Ergebnisse werden als
+              Grafik präsentiert, sodass du auf einen Blick erkennen kannst,
+              welche Themen für welche Partei besonders wichtig sind.
+            </p>
+            <p className="font-dbSerif font-bold pb-8">
+              Teste es jetzt und entdecke, wer über das spricht, was dir am
+              Herzen liegt!
+            </p>
+          </div>
+
+          <p className="font-dmSerif text-lg">Suche nach einem Begriff</p>
+          <input
+            className="font-sans rounded p-2 m-4 border-2 border-black"
+            placeholder="Wort eingeben"
+            onChange={(e) => setWord(e.target.value.toLowerCase())}
+          ></input>
+          <button
+            className="bg-black text-white rounded p-2 mb-4"
+            onClick={getWordCount}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            Suchen
+          </button>
+          <div className="w-full pb-4 mt-4 flex items-center justify-center">
+            <BarChart
+              dataset={data}
+              yAxis={[
+                {
+                  scaleType: "band",
+                  dataKey: "party",
+                  colorMap: {
+                    type: "ordinal",
+                    colors: ["#3794E1", "#D63838"],
+                  },
+                },
+              ]}
+              series={[{ dataKey: "count" }]}
+              layout={"horizontal"}
+              width={330}
+              margin={{ left: 40, right: 20, top: 20, bottom: 20 }}
+              height={data.length * 80}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }
